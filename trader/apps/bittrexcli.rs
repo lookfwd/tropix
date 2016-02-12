@@ -74,7 +74,6 @@ fn main() {
     			println!("Balance {:?}", balance.Balance);
     			println!("Available {:?}", balance.Available);
     			println!("Pending {:?}", balance.Pending);
-    			println!("CryptoAddress {:?}", balance.CryptoAddress);
     		}
       		loop_index = 1;	
     	}

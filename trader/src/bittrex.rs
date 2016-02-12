@@ -48,7 +48,6 @@ pub struct Balances {
 	pub Balance: f64,
 	pub Available: f64,
 	pub Pending: f64,
-	pub CryptoAddress: String,
 }
 
 #[derive(RustcDecodable, RustcEncodable)]
@@ -93,7 +92,7 @@ pub struct OpenOrder {
 pub fn get_balances(apikey: &str, secretkey: &str) -> Vec<Balances> {
 	let api_keystring = "apikey=".to_string() + apikey;
 	let api_nonce = "&nonce=1";
-	let parameters = "".to_string() + &api_keystring+ &api_nonce;
+	let parameters = "".to_string() + &api_keystring + &api_nonce;
 	let the_secret_bytes = secretkey.as_bytes();
 	let begin_url = "https://bittrex.com/api/v1.1/account/getbalances?".to_string() + &parameters;
 	let the_url_clone = begin_url.clone();
@@ -102,8 +101,8 @@ pub fn get_balances(apikey: &str, secretkey: &str) -> Vec<Balances> {
 	let the_base_key = the_secret_bytes;
 	let mut the_new_mac = crypto::hmac::Hmac::new(the_sha, the_base_key);
 	the_new_mac.input(begin_url.as_bytes());
-	let the_signature_string =  &the_new_mac.result().code().to_hex().to_string();
 
+	let the_signature_string =  &the_new_mac.result().code().to_hex().to_string();
 	let resp = http::handle()
 		.post(the_url_clone, &parameters)
 		.header("apisign", &the_signature_string)
