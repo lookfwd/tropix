@@ -156,7 +156,7 @@ fn main() {
 
     		let rate_trimmed = rate.trim_right_matches("\n");
 
-			let method_response = buy_market(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &quantity_trimmed, &rate_trimmed);
+			let method_response = buy_limit(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &quantity_trimmed, &rate_trimmed);
 			
 			println!("{:?}", method_response);
 		}
@@ -194,7 +194,7 @@ fn main() {
     		let stdin5 = io::stdin();
     		stdin5.lock().read_line(&mut rate).unwrap();
     		let rate_trimmed = rate.trim_right_matches("\n");
-			let method_response = sell_market(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &quantity_trimmed, &rate_trimmed);
+			let method_response = sell_limit(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &quantity_trimmed, &rate_trimmed);
 			println!("{:?}", method_response);
 		}
 		else if input == "5\n" {
@@ -315,6 +315,7 @@ fn main() {
 
     					target_price_multiplier = 100.00 - discount_parsed;
     					target_price = twentyhour_price * target_price_multiplier;
+                        println!("Target sell price and better: {:?}", target_price);
     				}
     			}
     		} 
@@ -332,6 +333,7 @@ fn main() {
 
     					target_price_multiplier = 100.00 + discount_parsed;
     					target_price = twentyhour_price * target_price_multiplier;
+                        println!("Target sell price and better: {:?}", target_price);
     				}
     			}
     		}
@@ -344,6 +346,8 @@ fn main() {
     		let mut total_traded = 0.00;
     		let mut int_indexing = 0;
     		let mut keep_timing = 0;
+
+            let mut trade_counter = 0;
 
     		let mut minimum_tradesize = 0.00;
 
@@ -384,25 +388,37 @@ fn main() {
     								outside_quant[profit_index] = trade.quantity;
     							}
 
-    				println!("broke line 388");
     							let order_book = get_orderbook(&the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, "500");
     							for buy in order_book.buy {
     								if buy.Rate >= trade.target {
-
-    				println!("broke line 393");
     									if buy.Quantity < outside_quant[profit_index] {
     										let the_trade_quantity: f64 = outside_quant[profit_index] - buy.Quantity;
-    										let xy: f64 = (the_trade_quantity * 100000000.00).round() / 100000000.00;
-    										outside_quant[profit_index] -= the_trade_quantity;
-    										let the_trade = sell_market(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &xy.to_string(), &buy.Rate.to_string());
-    										total_profit += (trade.target - trade.price) * xy;
-    										println!("total profit {:?}", total_profit);
+    										
+                                            let xy: f64 = (the_trade_quantity * 100000000.00).round() / 100000000.00;
+    										
+                                            outside_quant[profit_index] -= the_trade_quantity;
+    										
+                                            let the_trade = sell_limit(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &xy.to_string(), &buy.Rate.to_string());
+    										
+                                            total_profit += (trade.target - trade.price) * xy;
+    										
+                                            println!("total profit {:?}", total_profit);
+
+                                            if outside_quant[profit_index] < 0.1 {
+                                                trade_counter -= 1;
+                                            }
+
     									}
     									else {
-    										let the_trade = sell_market(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &trade.quantity.to_string(), &buy.Rate.to_string());
-    										total_profit += (trade.target - trade.price) * trade.quantity;
-    										outside_quant[profit_index] = 0.00;
-    										println!("total profit {:?}", total_profit);
+    										let the_trade = sell_limit(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &trade.quantity.to_string(), &buy.Rate.to_string());
+    										
+                                            total_profit += (trade.target - trade.price) * trade.quantity;
+    										
+                                            outside_quant[profit_index] = 0.00;
+    										
+                                            println!("total profit {:?}", total_profit);
+                                            
+                                            trade_counter -= 1;
     									}
     									
     								}
@@ -410,6 +426,7 @@ fn main() {
     							profit_index += 1;
     						}
     					}
+if trade_counter < 60 {
     					let order_book = get_orderbook(&the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, "500");
     					
     					for sell in order_book.sell {
@@ -418,45 +435,68 @@ fn main() {
 
     							if sell.Quantity > available_trade {
     								let the_longrate = available_trade / sell.Rate;
+
     								let y = (the_longrate * 100000000.00).round() / 100000000.00;
-    								let the_trade = buy_market(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &y.to_string(), &sell.Rate.to_string());
-    								total_traded += available_trade;
-    								let profit_multiplier = profit_parsed / 100.00;
-    								let profit_multiplier_next = profit_multiplier + 1.00;
-    								let the_targetrate = sell.Rate * profit_multiplier_next;
-    								let xy = (the_targetrate * 100000000.00).round() / 100000000.00;
+
+    								let the_trade = buy_limit(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &y.to_string(), &sell.Rate.to_string());
+    								
+                                    total_traded += available_trade;
+    								
+                                    let profit_multiplier = profit_parsed / 100.00;
+    								
+                                    let profit_multiplier_next = profit_multiplier + 1.00;
+    								
+                                    let the_targetrate = sell.Rate * profit_multiplier_next;
+    								
+                                    let xy = (the_targetrate * 100000000.00).round() / 100000000.00;
 
     								let the_botstrade: BotTrade = BotTrade {
     									price: sell.Rate,
     									quantity: y,
     									target: xy,
     								};
+
     								bots_clone1.push(the_botstrade);
 
-    										println!("TRADE MADE {:?}", the_trade);
-    										println!("TRADE MADE {:?}", the_botstrade.quantity);
+                                    trade_counter += 1;
+
+    								println!("TRADE MADE {:?}", the_trade);
+
+    								println!("TRADE MADE {:?}", the_botstrade.quantity);
 
     							}
     							else {
     								let the_adjusted_quantity = available_trade - sell.Quantity;
+
     								let the_longrate = the_adjusted_quantity / sell.Rate;
+
     								let y = (the_longrate * 100000000.00).round() / 100000000.00;
 
-    								let the_trade = buy_market(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &y.to_string(), &sell.Rate.to_string());
-    								total_traded += the_adjusted_quantity;
-    								let profit_multiplier = profit_parsed / 100.00;
-    								let profit_multiplier_next = profit_multiplier + 1.00;
-    								let the_targetrate = sell.Rate * profit_multiplier_next;
-    								let xy = (the_targetrate * 100000000.00).round() / 100000000.00;
+    								let the_trade = buy_limit(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &y.to_string(), &sell.Rate.to_string());
+    								
+                                    total_traded += the_adjusted_quantity;
+    								
+                                    let profit_multiplier = profit_parsed / 100.00;
+    								
+                                    let profit_multiplier_next = profit_multiplier + 1.00;
+    								
+                                    let the_targetrate = sell.Rate * profit_multiplier_next;
+    								
+                                    let xy = (the_targetrate * 100000000.00).round() / 100000000.00;
 
     								let the_botstrade: BotTrade = BotTrade {
     									price: sell.Rate,
     									quantity: y,
     									target: xy,
     								};
+
     								bots_clone2.push(the_botstrade);
-    										println!("TRADE MADE {:?}", the_trade);
-    										println!("TRADE MADE {:?}", the_botstrade.quantity);
+
+                                    trade_counter += 1;
+
+    								println!("TRADE MADE {:?}", the_trade);
+
+    								println!("TRADE MADE {:?}", the_botstrade.quantity);
     							}
 
     						}
@@ -477,16 +517,20 @@ fn main() {
     										let the_trade_quantity = outside_quant[profit_index] - sell.Quantity;
     										let xy = (the_trade_quantity * 100000000.00).round() / 100000000.00;
     										outside_quant[profit_index] -= the_trade_quantity;
-    										let the_trade = buy_market(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &xy.to_string(), &sell.Rate.to_string());
+    										let the_trade = buy_limit(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &xy.to_string(), &sell.Rate.to_string());
     										total_profit += (trade.price - trade.target) * xy;
+                                            if outside_quant[profit_index] < 0.1 {
+                                                trade_counter -= 1;
+                                            }
 
     										println!("total profit {:?}", total_profit);
     									}
     									else {
-    										let the_trade = buy_market(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &trade.quantity.to_string(), &sell.Rate.to_string());
+    										let the_trade = buy_limit(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &trade.quantity.to_string(), &sell.Rate.to_string());
     										total_profit += (trade.price - trade.target) * trade.quantity;
     										outside_quant[profit_index] = 0.00;
     										println!("total profit {:?}", total_profit);
+                                                trade_counter -= 1;
     									}
     									
     								}
@@ -501,10 +545,10 @@ fn main() {
     					minimum_tradesize = 0.00056 / temp_ticker.Last;
     					for buy in order_book.buy {
     						available_trade = max_trade_amount - total_traded;
-    						if (buy.Rate > target_price) & (available_trade > minimum_tradesize) {
+    						if (buy.Rate > target_price) & (available_trade > minimum_tradesize) & (trade_counter < 51) {
     							if buy.Quantity > available_trade {
     								let y = (available_trade * 10000.00).round() / 10000.00;
-    								let the_trade = sell_market(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &y.to_string(), &buy.Rate.to_string());
+    								let the_trade = sell_limit(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &y.to_string(), &buy.Rate.to_string());
     								total_traded += available_trade;
     								let profit_multiplier = profit_parsed / 100.00;
     								let profit_multiplier_next = 1.00 - profit_multiplier;
@@ -517,12 +561,14 @@ fn main() {
     									target: xy,
     								};
     								bots_clone3.push(the_botstrade);
-    										println!("TRADE MADE {:?}", the_botstrade.quantity);
+                                    trade_counter += 1;
+                                    println!("TRADE MADE {:?}", the_trade);
+                                    println!("TRADE MADE {:?}", the_botstrade.quantity);
     							}
     							else {
     								let the_adjusted_quantity = available_trade - buy.Quantity;
     								let y = (the_adjusted_quantity * 1000000.00).round() / 100000.00;
-    								let the_trade = sell_market(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &y.to_string(), &buy.Rate.to_string());
+    								let the_trade = sell_limit(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &y.to_string(), &buy.Rate.to_string());
     								total_traded += the_adjusted_quantity;
     								let profit_multiplier = profit_parsed / 100.00;
     								let profit_multiplier_next = 1.00 - profit_multiplier;
@@ -535,7 +581,10 @@ fn main() {
     									target: xy,
     								};
     								bots_clone4.push(the_botstrade);
-    										println!("TRADE MADE {:?}", the_botstrade.quantity);
+
+                                    trade_counter += 1;
+                                    println!("TRADE MADE {:?}", the_trade);
+                                    println!("TRADE MADE {:?}", the_botstrade.quantity);
     							}
     						}
     					}
@@ -546,23 +595,19 @@ fn main() {
     				keep_timing = 0;
     				total_traded = 0.00;
     				println!("resetting trade total");
-    				println!("broke line 546");
     			}
 
     			if keep_daily_timing == 14400 {
     				let ticker_string = get_ticker(&firstcoin_trimmed, &secondcoin_trimmed);
-    				println!("broke line 550");
     				twentyhour_price = ticker_string.Last;
     				target_price = target_price_multiplier * twentyhour_price;
     				keep_daily_timing = 0;
-
-    				println!("broke line 556");
     			}
 
     			let the_seconds = Duration::new(6, 0);
 				sleep(the_seconds);
     		}
-
+}
 
     		// first needs to get the trade amount, 
     		/*

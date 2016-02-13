@@ -121,7 +121,7 @@ pub fn get_balances(apikey: &str, secretkey: &str) -> Vec<Balances> {
 }
 
 
-pub fn buy_market(apikey: &str, secretkey: &str, firstcoin: &str, secondcoin: &str, quantity: &str, rate: &str) -> String {
+pub fn buy_limit(apikey: &str, secretkey: &str, firstcoin: &str, secondcoin: &str, quantity: &str, rate: &str) -> String {
 
   //Buy
 //secret Key
@@ -161,7 +161,7 @@ pub fn buy_market(apikey: &str, secretkey: &str, firstcoin: &str, secondcoin: &s
 
 }
 
-pub fn sell_market(apikey: &str, secretkey: &str, firstcoin: &str, secondcoin: &str, quantity: &str, rate: &str) -> String {
+pub fn sell_limit(apikey: &str, secretkey: &str, firstcoin: &str, secondcoin: &str, quantity: &str, rate: &str) -> String {
 
   //Buy
 //secret Key
