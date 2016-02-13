@@ -253,7 +253,9 @@ fn main() {
     		let direction_parsed: i32 = direction_trimmed.parse().ok().expect("invalid input");
 
 			println!("Choose a percent discount: the price below the current market price you want to buy for e.g. 3 \
-				an entry of 3 will mean that the robot will buy any orders available -3% and below the price from when the bot was started");
+				an entry of 3 will mean that the robot will buy any orders available -3% and below the price from when the bot was started\
+                putting a negative entry e.g. -1 will cause the robot to trade 1% into the last price \
+                this kind of entry will frequently make orders into the prevailing order book a good way to clean it up");
 			let mut discount = String::new();
     		let stdin4 = io::stdin();
     		stdin4.lock().read_line(&mut discount).unwrap();
@@ -305,16 +307,25 @@ fn main() {
     			for balance in the_balances {
     				if balance.Currency == firstcoin_trimmed {
     					let balance_percent: f64 = 100.00 / balance_parsed;
+
     					let usable_balance: f64 = balance.Available * balance_percent;
+
     					let divided_balance: f64 = usable_balance / 50.0;
+
     					println!("trade size will be: {:?}", divided_balance);
+
     					max_trade_amount = divided_balance;
 
     					let ticker_string = get_ticker(&firstcoin_trimmed, &secondcoin_trimmed);
+
     					twentyhour_price = ticker_string.Last;
 
     					target_price_multiplier = 100.00 - discount_parsed;
-    					target_price = twentyhour_price * target_price_multiplier;
+
+                        let target_price_multiplier_percent = target_price_multiplier/100.00;
+
+    					target_price = twentyhour_price * target_price_multiplier_percent;
+
                         println!("Target sell price and better: {:?}", target_price);
     				}
     			}
@@ -323,16 +334,25 @@ fn main() {
     			for balance in the_balances {
     				if balance.Currency == secondcoin_trimmed {
     					let balance_percent: f64 = 100.00 / balance_parsed;
+
     					let usable_balance: f64 = balance.Available * balance_percent;
+
     					let divided_balance: f64 = usable_balance / 50.0;
+
     					println!("trade size will be: {:?}", divided_balance);
+
     					max_trade_amount = divided_balance;
 
     					let ticker_string = get_ticker(&firstcoin_trimmed, &secondcoin_trimmed);
+
     					twentyhour_price = ticker_string.Last;
 
     					target_price_multiplier = 100.00 + discount_parsed;
-    					target_price = twentyhour_price * target_price_multiplier;
+
+                        let target_price_multiplier_percent = target_price_multiplier/100.00;
+
+                        target_price = twentyhour_price * target_price_multiplier_percent;
+
                         println!("Target sell price and better: {:?}", target_price);
     				}
     			}
@@ -376,7 +396,7 @@ fn main() {
     				//two things, track the trades made and get profit taking
     				//the other thing is figure out for calculating the minimum trade size
     			//3
-    			if total_traded < max_trade_amount {
+    			if (total_traded < max_trade_amount) & (trade_counter < 60) {
     				let mut available_trade = max_trade_amount - total_traded;
 
     				if direction_parsed == 1 {
@@ -426,7 +446,6 @@ fn main() {
     							profit_index += 1;
     						}
     					}
-if trade_counter < 60 {
     					let order_book = get_orderbook(&the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, "500");
     					
     					for sell in order_book.sell {
@@ -434,9 +453,7 @@ if trade_counter < 60 {
     						if (sell.Rate < target_price) & (available_trade > 0.00056) {
 
     							if sell.Quantity > available_trade {
-    								let the_longrate = available_trade / sell.Rate;
-
-    								let y = (the_longrate * 100000000.00).round() / 100000000.00;
+    								let y = (available_trade * 100000000.00).round() / 100000000.00;
 
     								let the_trade = buy_limit(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &y.to_string(), &sell.Rate.to_string());
     								
@@ -468,9 +485,7 @@ if trade_counter < 60 {
     							else {
     								let the_adjusted_quantity = available_trade - sell.Quantity;
 
-    								let the_longrate = the_adjusted_quantity / sell.Rate;
-
-    								let y = (the_longrate * 100000000.00).round() / 100000000.00;
+    								let y = (the_adjusted_quantity * 100000000.00).round() / 100000000.00;
 
     								let the_trade = buy_limit(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &y.to_string(), &sell.Rate.to_string());
     								
@@ -508,6 +523,7 @@ if trade_counter < 60 {
     						for trade in &bots_trades {
     							if count_quant[profit_index] == 0 {
     								count_quant[profit_index] = 1;
+
     								outside_quant[profit_index] = trade.quantity;
     							}
     							let order_book = get_orderbook(&the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, "500");
@@ -515,22 +531,34 @@ if trade_counter < 60 {
     								if sell.Rate <= trade.target {
     									if sell.Quantity < outside_quant[profit_index] {
     										let the_trade_quantity = outside_quant[profit_index] - sell.Quantity;
-    										let xy = (the_trade_quantity * 100000000.00).round() / 100000000.00;
-    										outside_quant[profit_index] -= the_trade_quantity;
-    										let the_trade = buy_limit(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &xy.to_string(), &sell.Rate.to_string());
-    										total_profit += (trade.price - trade.target) * xy;
+    										
+                                            let xy = (the_trade_quantity * 100000000.00).round() / 100000000.00;
+    										
+                                            outside_quant[profit_index] -= the_trade_quantity;
+    										
+                                            let the_trade = buy_limit(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &xy.to_string(), &sell.Rate.to_string());
+    										
+                                            total_profit += (trade.price - trade.target) * xy;
+                                            
                                             if outside_quant[profit_index] < 0.1 {
                                                 trade_counter -= 1;
+
                                             }
 
     										println!("total profit {:?}", total_profit);
     									}
     									else {
-    										let the_trade = buy_limit(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &trade.quantity.to_string(), &sell.Rate.to_string());
-    										total_profit += (trade.price - trade.target) * trade.quantity;
+                                            let xy = (trade.quantity * 100000000.00).round() / 100000000.00;
+
+    										let the_trade = buy_limit(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &xy.to_string(), &sell.Rate.to_string());
+    										
+                                            total_profit += (trade.price - trade.target) * trade.quantity;
+
     										outside_quant[profit_index] = 0.00;
+
     										println!("total profit {:?}", total_profit);
-                                                trade_counter -= 1;
+
+                                            trade_counter -= 1;
     									}
     									
     								}
@@ -545,14 +573,22 @@ if trade_counter < 60 {
     					minimum_tradesize = 0.00056 / temp_ticker.Last;
     					for buy in order_book.buy {
     						available_trade = max_trade_amount - total_traded;
-    						if (buy.Rate > target_price) & (available_trade > minimum_tradesize) & (trade_counter < 51) {
-    							if buy.Quantity > available_trade {
-    								let y = (available_trade * 10000.00).round() / 10000.00;
-    								let the_trade = sell_limit(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &y.to_string(), &buy.Rate.to_string());
-    								total_traded += available_trade;
+    						
+                            if (buy.Rate > target_price) & (available_trade > minimum_tradesize) {
+    							
+                                if buy.Quantity > available_trade {
+    								let y = (available_trade * 100000000.00).round() / 100000000.00;
+    								
+                                    let the_trade = sell_limit(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &y.to_string(), &buy.Rate.to_string());
+    								
+                                    total_traded += available_trade;
+
     								let profit_multiplier = profit_parsed / 100.00;
+
     								let profit_multiplier_next = 1.00 - profit_multiplier;
+
     								let the_targetrate = buy.Rate * profit_multiplier_next;
+
     								let xy = (the_targetrate * 100000000.00).round() / 100000000.00;
 
     								let the_botstrade: BotTrade = BotTrade {
@@ -560,19 +596,30 @@ if trade_counter < 60 {
     									quantity: y,
     									target: xy,
     								};
+
     								bots_clone3.push(the_botstrade);
+
                                     trade_counter += 1;
+
                                     println!("TRADE MADE {:?}", the_trade);
+
                                     println!("TRADE MADE {:?}", the_botstrade.quantity);
     							}
     							else {
     								let the_adjusted_quantity = available_trade - buy.Quantity;
-    								let y = (the_adjusted_quantity * 1000000.00).round() / 100000.00;
-    								let the_trade = sell_limit(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &y.to_string(), &buy.Rate.to_string());
-    								total_traded += the_adjusted_quantity;
+    								
+                                    let y = (the_adjusted_quantity * 100000000.00).round() / 100000000.00;
+    								
+                                    let the_trade = sell_limit(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &y.to_string(), &buy.Rate.to_string());
+    								
+                                    total_traded += the_adjusted_quantity;
+
     								let profit_multiplier = profit_parsed / 100.00;
+
     								let profit_multiplier_next = 1.00 - profit_multiplier;
+
     								let the_targetrate = buy.Rate * profit_multiplier_next;
+
     								let xy = (the_targetrate * 100000000.00).round() / 100000000.00;
 
     								let the_botstrade: BotTrade = BotTrade {
@@ -580,10 +627,13 @@ if trade_counter < 60 {
     									quantity: y,
     									target: xy,
     								};
+
     								bots_clone4.push(the_botstrade);
 
                                     trade_counter += 1;
+
                                     println!("TRADE MADE {:?}", the_trade);
+
                                     println!("TRADE MADE {:?}", the_botstrade.quantity);
     							}
     						}
@@ -607,7 +657,7 @@ if trade_counter < 60 {
     			let the_seconds = Duration::new(6, 0);
 				sleep(the_seconds);
     		}
-}
+
 
     		// first needs to get the trade amount, 
     		/*
