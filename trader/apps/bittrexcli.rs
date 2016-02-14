@@ -338,7 +338,7 @@ fn main() {
     		else if direction_parsed == 2 {
     			for balance in the_balances {
     				if balance.Currency == secondcoin_trimmed {
-    					let balance_percent: f64 = 100.00 / balance_parsed;
+    					let balance_percent: f64 = balance_parsed / 100.00;
 
     					let usable_balance: f64 = balance.Available * balance_percent;
 
