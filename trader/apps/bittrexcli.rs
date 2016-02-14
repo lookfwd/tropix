@@ -306,7 +306,7 @@ fn main() {
     		if direction_parsed == 1 {
     			for balance in the_balances {
     				if balance.Currency == firstcoin_trimmed {
-    					let balance_percent: f64 = 100.00 / balance_parsed;
+    					let balance_percent: f64 = balance_parsed / 100.00;
 
     					let usable_balance: f64 = balance.Available * balance_percent;
 
@@ -320,11 +320,15 @@ fn main() {
 
     					twentyhour_price = ticker_string.Last;
 
+                        println!("Last trade price was : {:?}", twentyhour_price);
+
     					target_price_multiplier = 100.00 - discount_parsed;
+                        
+                        let target_price_multiplier_percent = target_price_multiplier / 100.00;
 
-                        let target_price_multiplier_percent = target_price_multiplier/100.00;
+                        let target_price_in = twentyhour_price * target_price_multiplier_percent;
 
-    					target_price = twentyhour_price * target_price_multiplier_percent;
+                        target_price = (target_price_in * 100000000.00).round() / 100000000.00;
 
                         println!("Target sell price and better: {:?}", target_price);
     				}
@@ -347,11 +351,15 @@ fn main() {
 
     					twentyhour_price = ticker_string.Last;
 
+                        println!("Last trade price was : {:?}", twentyhour_price);
+
     					target_price_multiplier = 100.00 + discount_parsed;
 
-                        let target_price_multiplier_percent = target_price_multiplier/100.00;
+                        let target_price_multiplier_percent = target_price_multiplier / 100.00;
 
-                        target_price = twentyhour_price * target_price_multiplier_percent;
+                        let target_price_in = twentyhour_price * target_price_multiplier_percent;
+
+                        target_price = (target_price_in * 100000000.00).round() / 100000000.00;
 
                         println!("Target sell price and better: {:?}", target_price);
     				}
@@ -410,7 +418,9 @@ fn main() {
 
     							let order_book = get_orderbook(&the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, "500");
     							for buy in order_book.buy {
+                                        println!("checking buy rate : {:?}", buy.Rate);
     								if buy.Rate >= trade.target {
+                                        println!("buy rate good checking quantity: {:?}", buy.Quantity);
     									if buy.Quantity < outside_quant[profit_index] {
     										let the_trade_quantity: f64 = outside_quant[profit_index] - buy.Quantity;
     										
@@ -529,6 +539,7 @@ fn main() {
     							let order_book = get_orderbook(&the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, "500");
     							for sell in order_book.sell {
     								if sell.Rate <= trade.target {
+
     									if sell.Quantity < outside_quant[profit_index] {
     										let the_trade_quantity = outside_quant[profit_index] - sell.Quantity;
     										
@@ -606,13 +617,12 @@ fn main() {
                                     println!("TRADE MADE {:?}", the_botstrade.quantity);
     							}
     							else {
-    								let the_adjusted_quantity = available_trade - buy.Quantity;
     								
-                                    let y = (the_adjusted_quantity * 100000000.00).round() / 100000000.00;
+                                    let y = (buy.Quantity * 100000000.00).round() / 100000000.00;
     								
                                     let the_trade = sell_limit(&the_api_key, &the_secret_trimmed, &firstcoin_trimmed, &secondcoin_trimmed, &y.to_string(), &buy.Rate.to_string());
     								
-                                    total_traded += the_adjusted_quantity;
+                                    total_traded += buy.Quantity;
 
     								let profit_multiplier = profit_parsed / 100.00;
 
