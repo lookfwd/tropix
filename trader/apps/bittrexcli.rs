@@ -316,7 +316,7 @@ fn main() {
 
     					twentyhour_price = ticker_string.Last;
 
-                        max_trade_amount = divided_balance * ticker_string.Last;
+                        max_trade_amount = divided_balance / ticker_string.Last;
 
                         println!("trade size will be: {:?}", max_trade_amount);
 
