@@ -312,23 +312,24 @@ fn main() {
 
     					let divided_balance: f64 = usable_balance / 50.0;
 
-    					println!("trade size will be: {:?}", divided_balance);
-
-    					max_trade_amount = divided_balance;
-
     					let ticker_string = get_ticker(&firstcoin_trimmed, &secondcoin_trimmed);
 
     					twentyhour_price = ticker_string.Last;
 
+                        max_trade_amount = divided_balance * ticker_string.Last;
+
+                        println!("trade size will be: {:?}", max_trade_amount);
+
                         println!("Last trade price was : {:?}", twentyhour_price);
 
     					target_price_multiplier = 100.00 - discount_parsed;
-                        
+
                         let target_price_multiplier_percent = target_price_multiplier / 100.00;
 
                         let target_price_in = twentyhour_price * target_price_multiplier_percent;
 
                         target_price = (target_price_in * 100000000.00).round() / 100000000.00;
+
 
                         println!("Target sell price and better: {:?}", target_price);
     				}
