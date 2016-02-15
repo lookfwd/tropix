@@ -17,7 +17,7 @@ sudo multirust update stable
 sudo multirust default stable
 
 # download and build tropix
-git clone https://github.com/dallyshalla/tropix
+git clone https://github.com/safex/tropix
 cd tropix
 cd trader
 cargo run --bin bittrexcli
@@ -34,7 +34,7 @@ brew install multirust
 multirust update stable && multirust default stable
 
 # download and build tropix
-git clone https://github.com/dallyshalla/tropix
+git clone https://github.com/safex/tropix
 cd tropix
 cd trader
 cargo run --bin bittrexcli
