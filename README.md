@@ -1,7 +1,7 @@
 # tropix
-trade automator for cryptocurrency exchange
 This is ALPHA level software, use at your own risk; The Buy and Sell methods and Balance methods are trivial.
 The trade automator however are not; No one except yourself are responsible for how you use it. This software is in an early testing phase, use with caution.
+
 #install
 ### Building from source
 
@@ -15,12 +15,6 @@ curl -sf https://raw.githubusercontent.com/brson/multirust/master/blastoff.sh | 
 # install stable and make it default
 sudo multirust update stable
 sudo multirust default stable
-
-# download and build tropix
-git clone https://github.com/safex/tropix
-cd tropix
-cd trader
-cargo run --bin bittrexcli
 ```
 
 ##### OSX with Homebrew
@@ -32,12 +26,24 @@ brew install multirust
 
 # install stable and make it default
 multirust update stable && multirust default stable
-
-# download and build tropix
-git clone https://github.com/safex/tropix
-cd tropix
-cd trader
-cargo run --bin bittrexcli
 ```
 
 
+
+#### Poloniex Auto Buy Robot
+
+```bash
+# download and build safex/tropix
+git clone https://github.com/safex/tropix
+cd tropix
+cargo run --bin poloautobuy
+```
+
+#### Bittrex CLI trading module
+
+```bash
+# download and build safex/tropix
+git clone https://github.com/safex/tropix
+cd tropix
+cargo run --bin bittrexcli
+```

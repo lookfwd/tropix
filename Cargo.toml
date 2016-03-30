@@ -1,0 +1,33 @@
+[package]
+authors = ["Safe Exchange Developers <team@safex.io>"]
+description = "API implementations to various crypto exchanges and some automated systems"
+documentation = "http://safex.io/safex/latest"
+homepage = "http://safex.io"
+license = "GPL-3.0"
+name = "tropix"
+readme = "README.md"
+repository = "https://github.com/safex/tropix"
+version = "0.1.0"
+
+
+[[bin]]
+name = "bittrexcli"
+path = "apps/bittrexcli.rs"
+
+[[bin]]
+name = "poloautobuy"
+path = "apps/poloautobuy.rs"
+
+[lib]
+name = "tropix"
+path = "src/lib.rs"
+
+
+[dependencies]
+rustc-serialize = "0.3.16"
+time = "0.1"
+rust-crypto = "^0.2"
+curl = "0.2.16"
+hyper = "0.7.2"
+iron = " 0.3.0"
+url = "0.5.7"
