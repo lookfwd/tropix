@@ -18,6 +18,10 @@ path = "apps/bittrexcli.rs"
 name = "poloautobuy"
 path = "apps/poloautobuy.rs"
 
+[[bin]]
+name = "poloautosell"
+path = "apps/poloautosell.rs"
+
 [lib]
 name = "tropix"
 path = "src/lib.rs"

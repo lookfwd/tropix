@@ -40,6 +40,14 @@ git clone https://github.com/safex/tropix
 cd tropix
 cargo run --bin poloautobuy
 ```
+#### Poloniex Auto Sell Robot
+
+```bash
+# download and build safex/tropix
+git clone https://github.com/safex/tropix
+cd tropix
+cargo run --bin poloautosell
+```
 
 #### Bittrex CLI trading module
 
