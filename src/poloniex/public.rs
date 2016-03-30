@@ -25,8 +25,6 @@ use hyper::header::Headers;
 
 use poloniex::connection::apiConnect;
 
-header! { (Key, "Key") => [String] }
-header! { (Sign, "Sign") => [String] }
 
 //There are six public methods, all of which take HTTP GET requests and return output in JSON format:
 
