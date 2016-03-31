@@ -64,8 +64,12 @@ pub fn returnCompleteBalances() {
     {"LTC":{"available":"5.015","onOrders":"1.0025","btcValue":"0.078"},"NXT:{...} ... }
     
 */
-pub fn returnDepositAddresses() {
+pub fn returnDepositAddresses(apikey: String, secretkey: &str, nonce: String) -> String  {
+  let bnonce = "&nonce=".to_string() + &nonce;
 
+  let parameters = "command=returnDepositAddresses".to_string() + &bnonce;
+  let response = apiConnect(apikey, secretkey, parameters);
+  response
 }
 
     /*  Returns all of your deposit addresses. Sample output:
@@ -73,8 +77,13 @@ pub fn returnDepositAddresses() {
     {"BTC":"19YqztHmspv2egyD6jQM3yn81x5t5krVdJ","LTC":"LPgf9kjv9H1Vuh4XSaKhzBe8JHdou1WgUB", ... "ITC":"Press Generate.." ... }
     
 */
-pub fn generateNewAddress() {
+pub fn generateNewAddress(apikey: String, secretkey: &str, nonce: String, currency: String) -> String {
+  let bcurrency = "&currency=".to_string() + &currency;
+  let bnonce = "&nonce=".to_string() + &nonce;
 
+  let parameters = "command=generateNewAddress".to_string() + &bcurrency + &bnonce;
+  let response = apiConnect(apikey, secretkey, parameters);
+  response
 }
 
    /*   Generates a new deposit address for the currency specified by the "currency" POST parameter. Sample output:
