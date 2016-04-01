@@ -84,6 +84,15 @@ fn main() {
     let frequency: u64 = frequency.parse().ok().expect("frequency is not a number");
     
 
+    println!("for margin trading enter 1 \n for non margin trading enter 0");
+    let mut input6 = String::new();
+    let stdin6 = io::stdin();
+    stdin6.lock().read_line(&mut input6).unwrap();
+
+    let margin_ind = input6.trim_right_matches("\n").to_string();
+
+    let margin_ind: u64 = margin_ind.parse().ok().expect("frequency is not a number");
+
 	let mut xyz = 0;
 	while xyz == 0 {
 
