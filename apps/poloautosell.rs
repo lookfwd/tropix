@@ -110,9 +110,17 @@ fn main() {
 		let mut mills = timespec.sec * 100;
 
 		if bids_results[0].1 < postion_clone.parse().ok().expect("max position turned out to not be a number either") {
-			sell(the_api_keyclone.to_string(), the_secret_trimmed, pair_vec[pair_ind2].to_string(), bids_results[0].0.to_string(), bids_results[0].1.to_string(), mills.to_string());
+            if margin_ind == 0 {
+                sell(the_api_keyclone.to_string(), the_secret_trimmed, pair_vec[pair_ind2].to_string(), bids_results[0].0.to_string(), bids_results[0].1.to_string(), mills.to_string());
+            } else {
+                marginSell(the_api_keyclone.to_string(), the_secret_trimmed, pair_vec[pair_ind2].to_string(), bids_results[0].0.to_string(), bids_results[0].1.to_string(), mills.to_string());
+            }
 		}	else {
-			sell(the_api_keyclone.to_string(), the_secret_trimmed, pair_vec[pair_ind2].to_string(), bids_results[0].0.to_string(), maxposition.to_string(), mills.to_string());
+            if margin_ind == 0 {
+                sell(the_api_keyclone.to_string(), the_secret_trimmed, pair_vec[pair_ind2].to_string(), bids_results[0].0.to_string(), maxposition.to_string(), mills.to_string());
+            } else {
+                marginSell(the_api_keyclone.to_string(), the_secret_trimmed, pair_vec[pair_ind2].to_string(), bids_results[0].0.to_string(), maxposition.to_string(), mills.to_string());
+            }
 		}
 
 		
