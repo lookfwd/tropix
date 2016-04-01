@@ -84,6 +84,15 @@ fn main() {
     let frequency: u64 = frequency.parse().ok().expect("frequency is not a number");
     
 
+    println!("for margin trading enter 1 \n for non margin trading enter 0");
+    let mut input6 = String::new();
+    let stdin6 = io::stdin();
+    stdin6.lock().read_line(&mut input6).unwrap();
+
+    let margin_ind = input6.trim_right_matches("\n").to_string();
+
+    let margin_ind: u64 = margin_ind.parse().ok().expect("frequency is not a number");
+
 	let mut xyz = 0;
 	while xyz == 0 {
 
@@ -101,9 +110,17 @@ fn main() {
 		let mut mills = timespec.sec * 100;
 
 		if bids_results[0].1 < postion_clone.parse().ok().expect("max position turned out to not be a number either") {
-			sell(the_api_keyclone.to_string(), the_secret_trimmed, pair_vec[pair_ind2].to_string(), bids_results[0].0.to_string(), bids_results[0].1.to_string(), mills.to_string());
+            if margin_ind == 0 {
+                sell(the_api_keyclone.to_string(), the_secret_trimmed, pair_vec[pair_ind2].to_string(), bids_results[0].0.to_string(), bids_results[0].1.to_string(), mills.to_string());
+            } else {
+                marginSell(the_api_keyclone.to_string(), the_secret_trimmed, pair_vec[pair_ind2].to_string(), bids_results[0].0.to_string(), bids_results[0].1.to_string(), mills.to_string());
+            }
 		}	else {
-			sell(the_api_keyclone.to_string(), the_secret_trimmed, pair_vec[pair_ind2].to_string(), bids_results[0].0.to_string(), maxposition.to_string(), mills.to_string());
+            if margin_ind == 0 {
+                sell(the_api_keyclone.to_string(), the_secret_trimmed, pair_vec[pair_ind2].to_string(), bids_results[0].0.to_string(), maxposition.to_string(), mills.to_string());
+            } else {
+                marginSell(the_api_keyclone.to_string(), the_secret_trimmed, pair_vec[pair_ind2].to_string(), bids_results[0].0.to_string(), maxposition.to_string(), mills.to_string());
+            }
 		}
 
 		
