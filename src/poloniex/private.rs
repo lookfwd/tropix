@@ -249,16 +249,30 @@ pub fn returnMarginAccountSummary() {
 
     {"totalValue": "0.00346561","pl": "-0.00001220","lendingFees": "0.00000000","netValue": "0.00345341","totalBorrowedValue": "0.00123220","currentMargin": "2.80263755"}
     */
-pub fn marginBuy() {
+pub fn marginBuy(apikey: String, secretkey: &str, currencypair: String, rate: String, amount: String, nonce: String) -> String {
+  let bcurrencypair = "&currencyPair=".to_string() + &currencypair;
+  let brate = "&rate=".to_string() + &rate;
+  let bamount = "&amount=".to_string() + &amount;
+  let bnonce = "&nonce=".to_string() + &nonce;
 
+  let parameters = "command=marginBuy".to_string() + &bcurrencypair + &brate + &bamount + &bnonce;
+  let response = apiConnect(apikey, secretkey, parameters);
+  response
 }
 
     /* Places a margin buy order in a given market. Required POST parameters are "currencyPair", "rate", and "amount". You may optionally specify a maximum lending rate using the "lendingRate" parameter. If successful, the method will return the order number and any trades immediately resulting from your order. Sample output:
 
     {"success":1,"message":"Margin order placed.","orderNumber":"154407998","resultingTrades":{"BTC_DASH":[{"amount":"1.00000000","date":"2015-05-10 22:47:05","rate":"0.01383692","total":"0.01383692","tradeID":"1213556","type":"buy"}]}}
    */
-pub fn marginSell() {
+pub fn marginSell(apikey: String, secretkey: &str, currencypair: String, rate: String, amount: String, nonce: String) -> String {
+  let bcurrencypair = "&currencyPair=".to_string() + &currencypair;
+  let brate = "&rate=".to_string() + &rate;
+  let bamount = "&amount=".to_string() + &amount;
+  let bnonce = "&nonce=".to_string() + &nonce;
 
+  let parameters = "command=marginSell".to_string() + &bcurrencypair + &brate + &bamount + &bnonce;
+  let response = apiConnect(apikey, secretkey, parameters);
+  response
 }
 
     /* Places a margin sell order in a given market. Parameters and output are the same as for the marginBuy method.
