@@ -18,6 +18,7 @@ use std::cell::RefCell;
 
 fn main() {
 	let mut pair_vec = Vec::new();
+    pair_vec.push("BTC_ETC".to_string());
     pair_vec.push("BTC_AMP".to_string());
 	pair_vec.push("BTC_LTC".to_string());
     pair_vec.push("BTC_DAO".to_string());
