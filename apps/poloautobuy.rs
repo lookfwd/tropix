@@ -33,6 +33,7 @@ fn main() {
 	pair_vec.push("BTC_DASH".to_string());
 	pair_vec.push("BTC_SYS".to_string());
 	pair_vec.push("BTC_XRP".to_string());
+	pair_vec.push("BTC_DCR".to_string());
 	//api Key
 
     println!("This robot will automatically buy a pair you will select on Poloniex\nYou will enter a maxmimum buy amount per interval\nand a frequency to buy, \n
