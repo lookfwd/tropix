@@ -40,6 +40,19 @@ git clone https://github.com/safex/tropix
 cd tropix
 cargo run --bin poloautobuy
 ```
+
+This robot will buy up to a certain amount after the elapse of an interval of time.
+
+```bash
+# overview of usage
+1. Enter Poloniex API key
+2. Enter Poloniex Secret key
+3. Enter the index of the Pair you want to trade
+4. Enter a number of coins you want to buy
+5. Enter how often you want to buy #4 options number of coins
+6. give a 1 for margin trading.. give a 0 for non margin trading
+```
+
 #### Poloniex Auto Sell Robot
 
 ```bash
@@ -47,6 +60,18 @@ cargo run --bin poloautobuy
 git clone https://github.com/safex/tropix
 cd tropix
 cargo run --bin poloautosell
+```
+
+This robot will sell up to a certain amount after the elapse of an interval of time.
+
+```bash
+# overview of usage
+1. Enter Poloniex API key
+2. Enter Poloniex Secret key
+3. Enter the index of the Pair you want to trade
+4. Enter a number of coins you want to sell
+5. Enter how often you want to sell #4 options number of coins
+6. give a 1 for margin trading.. give a 0 for non margin trading
 ```
 
 #### Bittrex CLI trading module
