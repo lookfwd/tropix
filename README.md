@@ -80,15 +80,31 @@ This robot will sell up to a certain amount after the elapse of an interval of t
 ```bash
 cargo run --bin bittrexautobuy
 ```
+This robot will buy up to a certain amount after the elapse of an interval of time.
 
 ```bash
 # overview of usage
-# This robot will buy up to a certain amount after the elapse of an interval of time.
 1. Enter Bittrex API key
 2. Enter Bittrex Secret key
 3. Enter the index of the Pair you want to trade
 4. Enter a number of coins you want to buy
-5. Enter how often every number of seconds you want to buy from option 4's number of coins
+5. Enter how often every number of seconds you want to buy from option 4s number of coins
+```
+
+#### Bittrex Auto Sell Robot
+
+```bash
+cargo run --bin bittrexautosell
+```
+This robot will sell up to a certain amount after the elapse of an interval of time.
+
+```bash
+# overview of usage
+1. Enter Bittrex API key
+2. Enter Bittrex Secret key
+3. Enter the index of the Pair you want to trade
+4. Enter a number of coins you want to sell
+5. Enter how often every number of seconds you want to sell from option 4s number of coins
 ```
 
 

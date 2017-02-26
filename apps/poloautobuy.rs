@@ -115,7 +115,7 @@ fn main() {
 		let timespec = time::get_time();
 		let mut mills = timespec.sec * 100;
 
-		if ask_results[0].1 < postion_clone.parse().ok().expect("max position turned out to not be a number either") {
+		if ask_results[0].1 < position_clone.parse().ok().expect("max position turned out to not be a number either") {
             if margin_ind == 0 {
                 buy(the_api_keyclone.to_string(), the_secret_trimmed, pair_vec[pair_ind2].to_string(), ask_results[0].0.to_string(), ask_results[0].1.to_string(), mills.to_string());
             } else {
