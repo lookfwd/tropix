@@ -4,6 +4,9 @@
 This is ALPHA level software, use at your own risk; The Buy and Sell methods and Balance methods are trivial.
 The trade automator however are not; No one except yourself are responsible for how you use it. This software is in an early testing phase, use with caution.
 
+### For questions or Discussion about the software visit the forum thread:
+### https://safe.exchange/t/tropix-and-poloniex/248
+
 #install
 ### Building from source
 
