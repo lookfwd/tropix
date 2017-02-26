@@ -76,7 +76,7 @@ fn main() {
     stdin3.lock().read_line(&mut input3).unwrap();
 
     let maxposition = input3.trim_right_matches("\n").to_string();
-    let postion_clone = maxposition.clone();
+    let position_clone = maxposition.clone();
 
 
     println!("Enter a buy frequency in seconds a value of 60 will mean 1 minute");

@@ -76,7 +76,7 @@ fn main() {
     stdin3.lock().read_line(&mut input3).unwrap();
 
     let maxposition = input3.trim_right_matches("\n").to_string();
-    let postion_clone = maxposition.clone();
+    let position_clone = maxposition.clone();
 
 
     println!("Enter a buy frequency in seconds a value of 60 will mean 1 minute");
@@ -114,7 +114,7 @@ fn main() {
 		let timespec = time::get_time();
 		let mut mills = timespec.sec * 100;
 
-		if bids_results[0].1 < postion_clone.parse().ok().expect("max position turned out to not be a number either") {
+		if bids_results[0].1 < position_clone.parse().ok().expect("max position turned out to not be a number either") {
             if margin_ind == 0 {
                 sell(the_api_keyclone.to_string(), the_secret_trimmed, pair_vec[pair_ind2].to_string(), bids_results[0].0.to_string(), bids_results[0].1.to_string(), mills.to_string());
             } else {
