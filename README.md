@@ -30,14 +30,18 @@ brew install multirust
 multirust update stable && multirust default stable
 ```
 
-
-
-#### Poloniex Auto Buy Robot
+#### Start using Tropix with git clone
 
 ```bash
 # download and build safex/tropix
 git clone https://github.com/safex/tropix
 cd tropix
+```
+###Once you are inside tropix folder you can use the automation robots:
+
+#### Poloniex Auto Buy Robot
+
+```bash
 cargo run --bin poloautobuy
 ```
 
@@ -56,9 +60,6 @@ This robot will buy up to a certain amount after the elapse of an interval of ti
 #### Poloniex Auto Sell Robot
 
 ```bash
-# download and build safex/tropix
-git clone https://github.com/safex/tropix
-cd tropix
 cargo run --bin poloautosell
 ```
 
@@ -74,11 +75,25 @@ This robot will sell up to a certain amount after the elapse of an interval of t
 6. give a 1 for margin trading.. give a 0 for non margin trading
 ```
 
+#### Bittrex Auto Buy Robot
+
+```bash
+cargo run --bin bittrexautobuy
+```
+
+```bash
+# overview of usage
+# This robot will buy up to a certain amount after the elapse of an interval of time.
+1. Enter Bittrex API key
+2. Enter Bittrex Secret key
+3. Enter the index of the Pair you want to trade
+4. Enter a number of coins you want to buy
+5. Enter how often every number of seconds you want to buy from option 4's number of coins
+```
+
+
 #### Bittrex CLI trading module
 
 ```bash
-# download and build safex/tropix
-git clone https://github.com/safex/tropix
-cd tropix
 cargo run --bin bittrexcli
 ```
