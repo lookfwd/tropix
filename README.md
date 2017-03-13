@@ -8,38 +8,49 @@ The trade automator however are not; No one except yourself are responsible for 
 ### https://safe.exchange/t/tropix-and-poloniex/248
 
 #install
-### Building from source
 
-##### Ubuntu 14.04, 15.04, 15.10
+## Build dependencies
+
+Tropix is fully compatible with Stable Rust.
+
+We recommend installing Rust through [rustup](https://www.rustup.rs/). If you don't already have rustup, you can install it like this:
+
+- Linux:
+	```bash
+	$ curl https://sh.rustup.rs -sSf | sh
+	```
+
+- OSX:
+	```bash
+	$ curl https://sh.rustup.rs -sSf | sh
+	```
+
+	`clang` is required. It comes with Xcode command line tools or can be installed with homebrew.
+
+- Windows
+
+    Make sure you have Visual Studio 2015 with C++ support installed. Next, download and run the rustup installer from
+	https://static.rust-lang.org/rustup/dist/x86_64-pc-windows-msvc/rustup-init.exe, start "VS2015 x64 Native Tools Command Prompt", and use the following command to install and set up the msvc toolchain:
+    ```
+	$ rustup default stable-x86_64-pc-windows-msvc
+    ```
+
+Once you have rustup, download and build from source
+
+----
+
+
+## Build from source
 
 ```bash
+# download Tropix code
+$ git clone https://github.com/safex/tropix
+$ cd tropix
 
-# install rust stable
-curl -sf https://raw.githubusercontent.com/brson/multirust/master/blastoff.sh | sh
-
-# install stable and make it default
-sudo multirust update stable
-sudo multirust default stable
+# build in release mode
+$ cargo build --release
 ```
 
-##### OSX with Homebrew
-
-```bash
-# install multirust
-brew update
-brew install multirust
-
-# install stable and make it default
-multirust update stable && multirust default stable
-```
-
-#### Start using Tropix with git clone
-
-```bash
-# download and build safex/tropix
-git clone https://github.com/safex/tropix
-cd tropix
-```
 ###Once you are inside tropix folder you can use the automation robots:
 
 #### Poloniex Auto Buy Robot
