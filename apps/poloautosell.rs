@@ -80,7 +80,7 @@ fn main() {
     let position_clone = maxposition.clone();
 
 
-    println!("Enter a buy frequency in seconds a value of 60 will mean 1 minute");
+    println!("Enter a sell frequency in seconds a value of 60 will mean 1 minute");
     let mut input4 = String::new();
     let stdin4 = io::stdin();
     stdin4.lock().read_line(&mut input4).unwrap();
