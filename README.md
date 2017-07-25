@@ -53,6 +53,21 @@ $ cargo build --release
 
 ###Once you are inside tropix folder you can use the automation robots:
 
+#### Poloniex Check Buys vs Sells Trade History Analysis (Public API)
+
+```bash
+cargo run --bin polobuysell
+```
+
+Use this program to see what is the buy sell ratio of a given pair since a given time
+
+```bash
+# overview of usage
+1. Choose a pair by entering its corresponding index
+2. Enter how many hours ago you want to analyze from
+3. See the results!
+```
+
 #### Poloniex Auto Buy Robot
 
 ```bash

@@ -115,7 +115,24 @@ pub fn returnOrderBook(pair: String) -> String {
 
     Call: http://poloniex.com/public?command=returnOrderBook&currencyPair=BTC_NXT&depth=50 */
 
-pub fn returnPublicTradeHistory() {
+pub fn returnPublicTradeHistory(pair: String, start: i64, end: i64) -> String {
+  let url = "http://poloniex.com/public?command=returnTradeHistory&currencyPair=".to_string() + &pair + "&start=" + &start.to_string()+ "&end=" + &end.to_string();
+
+  let client = Client::new();
+
+  let mut results = client.get(&url)
+    .header(Connection::close())
+    .send().unwrap();
+
+  let mut payload = String::new();
+
+  results.read_to_string(&mut payload).unwrap();
+
+  let json = Json::from_str(&payload).unwrap();
+
+  let trade_history_string: String = json::encode(&json).unwrap();
+
+  trade_history_string
 
 }
 

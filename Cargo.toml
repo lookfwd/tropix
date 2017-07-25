@@ -30,6 +30,10 @@ path = "apps/bittrexautobuy.rs"
 name = "bittrexautosell"
 path = "apps/bittrexautosell.rs"
 
+[[bin]]
+name = "polobuysell"
+path = "apps/buy_v_sell_poloniex.rs"
+
 [lib]
 name = "tropix"
 path = "src/lib.rs"
