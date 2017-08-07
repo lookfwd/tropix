@@ -85,7 +85,7 @@ fn main() {
     		let stdin1 = io::stdin();
     		stdin1.lock().read_line(&mut firstcoin).unwrap();
     		let firstcoin_trimmed = firstcoin.trim_right_matches("\n");
-   			println!("Select second coin\"MAID\"");
+   			println!("Select second coin\"SAFEX\"");
     		let mut secondcoin = String::new();
     		let stdin2 = io::stdin();
     		stdin2.lock().read_line(&mut secondcoin).unwrap();
@@ -129,7 +129,7 @@ fn main() {
 
     		let firstcoin_trimmed = firstcoin.trim_right_matches("\n");
 
-   			println!("Select second coin\"MAID\"");
+   			println!("Select second coin\"SAFEX\"");
     		let mut secondcoin = String::new();
     		let stdin2 = io::stdin();
     		stdin2.lock().read_line(&mut secondcoin).unwrap();

@@ -15,7 +15,7 @@ use std::io::{BufRead};
 
 fn main() {
 
-	let pair_vec = vec!["SEC", "ETH", "MAID", "ETC", "BCC"];
+	let pair_vec = vec!["SAFEX", "ETH", "MAID", "ETC", "BCC"];
 
 	println!("Enter Your Bittrex Api Key");
     let mut input1 = String::new();
