@@ -37,6 +37,17 @@ We recommend installing Rust through [rustup](https://www.rustup.rs/). If you do
 
 Once you have rustup, download and build from source
 
+- Docker
+
+    Build the image: `docker build -t tropix .`. Then open docker and build from source:
+
+```
+docker run --rm -it -v $(pwd):/rust/tropix tropix /bin/bash
+cd tropix
+cargo build --release
+```
+
+
 ----
 
 
