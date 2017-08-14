@@ -1,28 +1,12 @@
-
-
-
-use iron::prelude::*;
-use iron::status;
-use url::form_urlencoded;
-
 use crypto::hmac::Hmac;
 use crypto::mac::Mac;
-use crypto::digest::Digest;
 use crypto::sha2::Sha512;
 
-use std::io;
 use std::io::Read;
-use std::thread::sleep;
-use std::time::Duration;
-use std::io::{BufRead};
-use std::ptr::null;
 
 use rustc_serialize::hex::ToHex;
-use rustc_serialize::{Decodable, Decoder};
-use rustc_serialize::json::{self, ToJson, Json};
 
 use hyper::Client;
-use hyper::header::Connection;
 use hyper::header::Headers;
 
 
@@ -31,7 +15,7 @@ use hyper::header::Headers;
 
 
 
-pub fn apiConnect(apikey: String, secretkey: &str, parameters: String) -> String {
+pub fn api_connect(apikey: String, secretkey: &str, parameters: String) -> String {
   let the_secret_bytes = secretkey.as_bytes();
 
   let param_string = parameters;
@@ -52,7 +36,7 @@ pub fn apiConnect(apikey: String, secretkey: &str, parameters: String) -> String
     headers.set_raw("Content-Type", vec![b"application/x-www-form-urlencoded".to_vec()]);
 
     println!("{:?}", headers.len());
-  let mut client = Client::new();
+  let client = Client::new();
 
 
     // Creating an outgoing request.

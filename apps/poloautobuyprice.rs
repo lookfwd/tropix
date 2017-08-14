@@ -4,16 +4,12 @@ extern crate time;
 
 use tropix::poloniex::public::*;
 use tropix::poloniex::private::*;
-use rustc_serialize::{Decodable, Decoder};
-use rustc_serialize::json::{self, ToJson, Json};
+use rustc_serialize::json::{self, Json};
 
 use std::io;
-use std::io::Read;
 use std::thread::sleep;
 use std::time::Duration;
 use std::io::{BufRead};
-use std::rc::Rc;
-use std::cell::RefCell;
 
 
 fn main() {
@@ -120,12 +116,12 @@ fn main() {
     let max_total: f64 = max_total.parse().ok().expect("price limit is not a number");
     
 
-	let mut xyz = 0;
+	let xyz = 0;
 	while xyz == 0 {
 
-        let mut running_count = 0.00;
+        let running_count = 0.00;
 
-		let all_orders = returnOrderBook(pair_vec[pair_ind2].to_string());
+		let all_orders = return_order_book(pair_vec[pair_ind2].to_string());
 		let json = Json::from_str(&all_orders).unwrap();
 
    		let ticker_result = json.find_path(&[&"asks"]).unwrap();
@@ -137,7 +133,7 @@ fn main() {
         println!("running count is {:?}", running_count);
 
 		let timespec = time::get_time();
-		let mut mills = timespec.sec * 100;
+		let mills = timespec.sec * 100;
 
         println!("asks is {:?}", ask_results[0].0);
         if ask_results[0].0 > price_limit {
@@ -151,14 +147,13 @@ fn main() {
                 if margin_ind == 0 {
                     buy(the_api_keyclone.to_string(), the_secret_trimmed, pair_vec[pair_ind2].to_string(), ask_results[0].0.to_string(), ask_results[0].1.to_string(), mills.to_string());
                 } else {
-                    marginBuy(the_api_keyclone.to_string(), the_secret_trimmed, pair_vec[pair_ind2].to_string(), ask_results[0].0.to_string(), ask_results[0].1.to_string(), mills.to_string());
-                    running_count += ask_results[0].1;
+                    margin_buy(the_api_keyclone.to_string(), the_secret_trimmed, pair_vec[pair_ind2].to_string(), ask_results[0].0.to_string(), ask_results[0].1.to_string(), mills.to_string());
                 }
             }   else {
                 if margin_ind == 0 {
                     buy(the_api_keyclone.to_string(), the_secret_trimmed, pair_vec[pair_ind2].to_string(), ask_results[0].0.to_string(), maxposition.to_string(), mills.to_string());
                 } else {
-                    marginBuy(the_api_keyclone.to_string(), the_secret_trimmed, pair_vec[pair_ind2].to_string(), ask_results[0].0.to_string(), maxposition.to_string(), mills.to_string());
+                    margin_buy(the_api_keyclone.to_string(), the_secret_trimmed, pair_vec[pair_ind2].to_string(), ask_results[0].0.to_string(), maxposition.to_string(), mills.to_string());
 
                 }
             }

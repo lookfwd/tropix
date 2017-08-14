@@ -1,8 +1,12 @@
+extern crate serde;
+#[macro_use]
+extern crate serde_derive;
+extern crate serde_json;
 extern crate rustc_serialize;
 extern crate time;
 extern crate crypto;
 extern crate curl;
-#[macro_use] extern crate hyper;
+extern crate hyper;
 extern crate iron;
 extern crate url;
 

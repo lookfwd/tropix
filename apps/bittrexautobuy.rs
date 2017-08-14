@@ -4,11 +4,7 @@ extern crate time;
 
 use tropix::bittrex::bittrex::*;
 
-use rustc_serialize::{Decodable, Decoder};
-use rustc_serialize::json::{self, ToJson, Json};
-
 use std::io;
-use std::io::Read;
 use std::thread::sleep;
 use std::time::Duration;
 use std::io::{BufRead};
@@ -73,20 +69,20 @@ fn main() {
     println!("pair {} / {}", &firstcoin, &secondcoin);
     println!("max position {}", &maxposition);
     println!("frequency {} seconds", &frequency);
-    let mut xyz = 0;
+    let xyz = 0;
 	while xyz == 0 {
 
 		
     	let order_book = get_orderbook(&the_secret_trimmed, &firstcoin, &secondcoin, "500");
     	for sell in order_book.sell {
 
-			if sell.Quantity > position_clone {
-    			let the_trade = buy_limit(&the_api_key, &the_secret_trimmed, &firstcoin, &secondcoin, &position_clone.to_string(), &sell.Rate.to_string());
+			if sell.quantity > position_clone {
+    			let the_trade = buy_limit(&the_api_key, &the_secret_trimmed, &firstcoin, &secondcoin, &position_clone.to_string(), &sell.rate.to_string());
     			println!("bought {}, {}", position_clone, the_trade);
     			break;
 			} else {
-				let the_trade = buy_limit(&the_api_key, &the_secret_trimmed, &firstcoin, &secondcoin, &sell.Quantity.to_string(), &sell.Rate.to_string());
-				println!("bought {}, {}", &sell.Quantity, the_trade);
+				let the_trade = buy_limit(&the_api_key, &the_secret_trimmed, &firstcoin, &secondcoin, &sell.quantity.to_string(), &sell.rate.to_string());
+				println!("bought {}, {}", &sell.quantity, the_trade);
 				break;
 			}    								
     	}

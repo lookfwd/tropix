@@ -1,34 +1,14 @@
-
-use iron::prelude::*;
-use iron::status;
-use url::form_urlencoded;
-
-use crypto::hmac::Hmac;
-use crypto::mac::Mac;
-use crypto::digest::Digest;
-use crypto::sha2::Sha512;
-
-use std::io;
 use std::io::Read;
-use std::thread::sleep;
-use std::time::Duration;
-use std::io::{BufRead};
-use std::ptr::null;
 
-use rustc_serialize::hex::ToHex;
-use rustc_serialize::{Decodable, Decoder};
-use rustc_serialize::json::{self, ToJson, Json};
+use rustc_serialize::json::{self, Json};
 
 use hyper::Client;
 use hyper::header::Connection;
-use hyper::header::Headers;
-
-use poloniex::connection::apiConnect;
 
 
 //There are six public methods, all of which take HTTP GET requests and return output in JSON format:
 
-pub fn returnLowestAsk(pair: String) -> String {
+pub fn return_lowest_ask(pair: String) -> String {
 	let client = Client::new();
 		//this_g.head(url)
     let mut results = client.get("https://poloniex.com/public?command=returnTicker")
@@ -41,13 +21,13 @@ pub fn returnLowestAsk(pair: String) -> String {
    	let json = Json::from_str(&payload).unwrap();
 
     let ticker_result = json.find_path(&[&pair, "lowestAsk"]).unwrap();
-  let ticker_result_string: String = json::encode(&ticker_result).unwrap();
-  let lowestAsk: String = json::decode(&ticker_result_string).unwrap();
+    let ticker_result_string: String = json::encode(&ticker_result).unwrap();
+    let lowest_ask: String = json::decode(&ticker_result_string).unwrap();
 
-	lowestAsk
+	lowest_ask
 }
 
-pub fn returnHighestBid(pair: String) -> String {
+pub fn return_highest_bid(pair: String) -> String {
 	let client = Client::new();
 		//this_g.head(url)
   let mut results = client.get("https://poloniex.com/public?command=returnTicker")
@@ -61,9 +41,9 @@ pub fn returnHighestBid(pair: String) -> String {
 
   let ticker_result = json.find_path(&[&pair, "highestBid"]).unwrap();
   let ticker_result_string: String = json::encode(&ticker_result).unwrap();
-  let highestBid: String = json::decode(&ticker_result_string).unwrap();
+  let highest_bid: String = json::decode(&ticker_result_string).unwrap();
 
-	highestBid
+  highest_bid
 }
 
 /*    Returns the ticker for all markets. Sample output:
@@ -74,7 +54,7 @@ pub fn returnHighestBid(pair: String) -> String {
 
     Call: https://poloniex.com/public?command=returnTicker */
 
-pub fn return24Volume() {
+pub fn return24_volume() {
 	
 }
 
@@ -84,7 +64,7 @@ pub fn return24Volume() {
 
     Call: https://poloniex.com/public?command=return24hVolume */
 
-pub fn returnOrderBook(pair: String) -> String {
+pub fn return_order_book(pair: String) -> String {
 
   let url = "http://poloniex.com/public?command=returnOrderBook&currencyPair=".to_string() + &pair + "&depth=250";
 
@@ -115,7 +95,7 @@ pub fn returnOrderBook(pair: String) -> String {
 
     Call: http://poloniex.com/public?command=returnOrderBook&currencyPair=BTC_NXT&depth=50 */
 
-pub fn returnPublicTradeHistory(pair: String, start: i64, end: i64) -> String {
+pub fn return_public_trade_history(pair: String, start: i64, end: i64) -> String {
   let url = "http://poloniex.com/public?command=returnTradeHistory&currencyPair=".to_string() + &pair + "&start=" + &start.to_string()+ "&end=" + &end.to_string();
 
   let client = Client::new();
@@ -142,7 +122,7 @@ pub fn returnPublicTradeHistory(pair: String, start: i64, end: i64) -> String {
 
     Call: https://poloniex.com/public?command=returnTradeHistory&currencyPair=BTC_NXT&start=1410158341&end=1410499372 */
 
-pub fn returnChartData() {
+pub fn return_chart_data() {
 
 }
 
@@ -153,7 +133,7 @@ pub fn returnChartData() {
 
     Call: https://poloniex.com/public?command=returnChartData&currencyPair=BTC_XMR&start=1405699200&end=9999999999&period=14400 */
 
-pub fn returnCurrencies() {
+pub fn return_currencies() {
 
 }
 
@@ -163,7 +143,7 @@ pub fn returnCurrencies() {
 
     Call: https://poloniex.com/public?command=returnCurrencies */
 
-pub fn returnLoanOrders() {
+pub fn return_loan_orders() {
 
 }
 

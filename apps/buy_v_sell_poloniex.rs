@@ -3,17 +3,10 @@ extern crate rustc_serialize;
 extern crate time;
 
 use tropix::poloniex::public::*;
-use tropix::poloniex::private::*;
-use rustc_serialize::{Decodable, Decoder};
-use rustc_serialize::json::{self, ToJson, Json};
+use rustc_serialize::json::{self, Json};
 
 use std::io;
-use std::io::Read;
-use std::thread::sleep;
-use std::time::Duration;
 use std::io::{BufRead};
-use std::rc::Rc;
-use std::cell::RefCell;
 
 #[derive(Debug, RustcDecodable, RustcEncodable)]
 struct Trade {
@@ -80,7 +73,7 @@ fn main() {
 
     println!("{:?}", &pair_vec[pair_ind2]);
 
-    let trade_data = returnPublicTradeHistory(pair_vec[pair_ind2].to_string(), start, end).to_string();
+    let trade_data = return_public_trade_history(pair_vec[pair_ind2].to_string(), start, end).to_string();
 	let json = Json::from_str(&trade_data).unwrap();
 
 

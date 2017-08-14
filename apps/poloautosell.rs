@@ -4,16 +4,12 @@ extern crate time;
 
 use tropix::poloniex::public::*;
 use tropix::poloniex::private::*;
-use rustc_serialize::{Decodable, Decoder};
-use rustc_serialize::json::{self, ToJson, Json};
+use rustc_serialize::json::{self, Json};
 
 use std::io;
-use std::io::Read;
 use std::thread::sleep;
 use std::time::Duration;
 use std::io::{BufRead};
-use std::rc::Rc;
-use std::cell::RefCell;
 
 
 fn main() {
@@ -99,10 +95,10 @@ fn main() {
 
     let margin_ind: u64 = margin_ind.parse().ok().expect("frequency is not a number");
 
-	let mut xyz = 0;
+	let xyz = 0;
 	while xyz == 0 {
 
-		let all_orders = returnOrderBook(pair_vec[pair_ind2].to_string());
+		let all_orders = return_order_book(pair_vec[pair_ind2].to_string());
 		let json = Json::from_str(&all_orders).unwrap();
 
    		let ticker_result = json.find_path(&[&"bids"]).unwrap();
@@ -113,19 +109,19 @@ fn main() {
 
 
 		let timespec = time::get_time();
-		let mut mills = timespec.sec * 100;
+		let mills = timespec.sec * 100;
 
 		if bids_results[0].1 < position_clone.parse().ok().expect("max position turned out to not be a number either") {
             if margin_ind == 0 {
                 sell(the_api_keyclone.to_string(), the_secret_trimmed, pair_vec[pair_ind2].to_string(), bids_results[0].0.to_string(), bids_results[0].1.to_string(), mills.to_string());
             } else {
-                marginSell(the_api_keyclone.to_string(), the_secret_trimmed, pair_vec[pair_ind2].to_string(), bids_results[0].0.to_string(), bids_results[0].1.to_string(), mills.to_string());
+                margin_sell(the_api_keyclone.to_string(), the_secret_trimmed, pair_vec[pair_ind2].to_string(), bids_results[0].0.to_string(), bids_results[0].1.to_string(), mills.to_string());
             }
 		}	else {
             if margin_ind == 0 {
                 sell(the_api_keyclone.to_string(), the_secret_trimmed, pair_vec[pair_ind2].to_string(), bids_results[0].0.to_string(), maxposition.to_string(), mills.to_string());
             } else {
-                marginSell(the_api_keyclone.to_string(), the_secret_trimmed, pair_vec[pair_ind2].to_string(), bids_results[0].0.to_string(), maxposition.to_string(), mills.to_string());
+                margin_sell(the_api_keyclone.to_string(), the_secret_trimmed, pair_vec[pair_ind2].to_string(), bids_results[0].0.to_string(), maxposition.to_string(), mills.to_string());
             }
 		}
 

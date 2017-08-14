@@ -1,29 +1,4 @@
-
-use iron::prelude::*;
-use iron::status;
-use url::form_urlencoded;
-
-use crypto::hmac::Hmac;
-use crypto::mac::Mac;
-use crypto::digest::Digest;
-use crypto::sha2::Sha512;
-
-use std::io;
-use std::io::Read;
-use std::thread::sleep;
-use std::time::Duration;
-use std::io::{BufRead};
-use std::ptr::null;
-
-use rustc_serialize::hex::ToHex;
-use rustc_serialize::{Decodable, Decoder};
-use rustc_serialize::json::{self, ToJson, Json};
-
-use hyper::Client;
-use hyper::header::Connection;
-use hyper::header::Headers;
-
-use poloniex::connection::apiConnect;
+use poloniex::connection::api_connect;
 
 
 /*Trading API Methods
@@ -43,11 +18,11 @@ All responses from the trading API are in JSON format. In the event of an error,
 
 There are several methods accepted by the trading API, each of which is specified by the "command" POST parameter:*/
 
-pub fn returnBalances(apikey: String, secretkey: &str, nonce: String) -> String {
+pub fn return_balances(apikey: String, secretkey: &str, nonce: String) -> String {
   let bnonce = "&nonce=".to_string() + &nonce;
 
   let parameters = "command=returnBalances".to_string() + &bnonce;
-  let response = apiConnect(apikey, secretkey, parameters);
+  let response = api_connect(apikey, secretkey, parameters);
   response
 }
 
@@ -55,7 +30,7 @@ pub fn returnBalances(apikey: String, secretkey: &str, nonce: String) -> String 
 
     {"BTC":"0.59098578","LTC":"3.31117268", ... }
     */
-pub fn returnCompleteBalances() {
+pub fn return_complete_balances() {
 
 }
 
@@ -64,11 +39,11 @@ pub fn returnCompleteBalances() {
     {"LTC":{"available":"5.015","onOrders":"1.0025","btcValue":"0.078"},"NXT:{...} ... }
     
 */
-pub fn returnDepositAddresses(apikey: String, secretkey: &str, nonce: String) -> String  {
+pub fn return_deposit_addresses(apikey: String, secretkey: &str, nonce: String) -> String  {
   let bnonce = "&nonce=".to_string() + &nonce;
 
   let parameters = "command=returnDepositAddresses".to_string() + &bnonce;
-  let response = apiConnect(apikey, secretkey, parameters);
+  let response = api_connect(apikey, secretkey, parameters);
   response
 }
 
@@ -77,12 +52,12 @@ pub fn returnDepositAddresses(apikey: String, secretkey: &str, nonce: String) ->
     {"BTC":"19YqztHmspv2egyD6jQM3yn81x5t5krVdJ","LTC":"LPgf9kjv9H1Vuh4XSaKhzBe8JHdou1WgUB", ... "ITC":"Press Generate.." ... }
     
 */
-pub fn generateNewAddress(apikey: String, secretkey: &str, nonce: String, currency: String) -> String {
+pub fn generate_new_address(apikey: String, secretkey: &str, nonce: String, currency: String) -> String {
   let bcurrency = "&currency=".to_string() + &currency;
   let bnonce = "&nonce=".to_string() + &nonce;
 
   let parameters = "command=generateNewAddress".to_string() + &bcurrency + &bnonce;
-  let response = apiConnect(apikey, secretkey, parameters);
+  let response = api_connect(apikey, secretkey, parameters);
   response
 }
 
@@ -97,7 +72,7 @@ pub fn generateNewAddress(apikey: String, secretkey: &str, nonce: String, curren
     All currencies added in the future will return addresses immediately. The ones that currently don't are being changed over to the new system.
     
 */
-pub fn returnDepositsWithdrawals() {
+pub fn return_deposits_withdrawals() {
 
 }
 
@@ -119,7 +94,8 @@ pub struct OrderBook {
   pub total: f64,
 }
 */
-pub fn returnOpenOrders(apikey: String, secretkey: &str, pair: String, nonce: String) -> String {
+
+pub fn return_open_orders(apikey: String, secretkey: &str, pair: String, nonce: String) -> String {
 
   let bpair = "&currencyPair=".to_string() + &pair;
 
@@ -127,9 +103,7 @@ pub fn returnOpenOrders(apikey: String, secretkey: &str, pair: String, nonce: St
 
   let parameters = "command=returnOpenOrders".to_string() + &bpair + &bnonce;
 
-  let mut response = apiConnect(apikey, secretkey, parameters);
-  response
-
+  api_connect(apikey, secretkey, parameters)
 }
 
    /*   Returns your open orders for a given market, specified by the "currencyPair" POST parameter, e.g. "BTC_XCP". Set "currencyPair" to "all" to return open orders for all markets. Sample output for single market:
@@ -140,7 +114,7 @@ pub fn returnOpenOrders(apikey: String, secretkey: &str, pair: String, nonce: St
 
     {"BTC_1CR":[],"BTC_AC":[{"orderNumber":"120466","type":"sell","rate":"0.025","amount":"100","total":"2.5"},{"orderNumber":"120467","type":"sell","rate":"0.04","amount":"100","total":"4"}], ... }
    */
-pub fn returnPrivateTradeHistory() {
+pub fn return_private_trade_history() {
 
 }
 
@@ -160,7 +134,7 @@ pub fn buy(apikey: String, secretkey: &str, currencypair: String, rate: String, 
   let bnonce = "&nonce=".to_string() + &nonce;
 
   let parameters = "command=buy".to_string() + &bcurrencypair + &brate + &bamount + &bnonce;
-  let response = apiConnect(apikey, secretkey, parameters);
+  let response = api_connect(apikey, secretkey, parameters);
   response
 }
 
@@ -176,19 +150,19 @@ pub fn sell(apikey: String, secretkey: &str, currencypair: String, rate: String,
   let bnonce = "&nonce=".to_string() + &nonce;
 
   let parameters = "command=sell".to_string() + &bcurrencypair + &brate + &bamount + &bnonce;
-  let response = apiConnect(apikey, secretkey, parameters);
+  let response = api_connect(apikey, secretkey, parameters);
   response
 }
 
    /*   Places a sell order in a given market. Parameters and output are the same as for the buy method.
     
 */
-pub fn cancelOrder(apikey: String, secretkey: &str, ordernum: String, nonce: String) -> String {
+pub fn cancel_order(apikey: String, secretkey: &str, ordernum: String, nonce: String) -> String {
   let bordernum = "&orderNumber=".to_string() + &ordernum;
   let bnonce = "&nonce=".to_string() + &nonce;
 
   let parameters = "command=cancelOrder".to_string() + &bordernum + & bnonce;
-  let response = apiConnect(apikey, secretkey, parameters);
+  let response = api_connect(apikey, secretkey, parameters);
   response
 }
 
@@ -197,7 +171,7 @@ pub fn cancelOrder(apikey: String, secretkey: &str, ordernum: String, nonce: Str
     {"success":1}
    
 */
-pub fn moveOrder() {
+pub fn move_order() {
 
 }
 
@@ -215,7 +189,7 @@ pub fn withdraw() {
     {"response":"Withdrew 2398 NXT."}
    
 */
-pub fn returnAvailableAccountBalances() {
+pub fn return_available_account_balances() {
 
 }
 
@@ -224,7 +198,7 @@ pub fn returnAvailableAccountBalances() {
     {"exchange":{"BTC":"1.19042859","BTM":"386.52379392","CHA":"0.50000000","DASH":"120.00000000","STR":"3205.32958001", "VNL":"9673.22570147"},"margin":{"BTC":"3.90015637","DASH":"250.00238240","XMR":"497.12028113"},"lending":{"DASH":"0.01174765","LTC":"11.99936230"}}
   
 */
-pub fn returnTradableBalances() {
+pub fn return_tradable_balances() {
 
 }
 
@@ -233,7 +207,7 @@ pub fn returnTradableBalances() {
     {"BTC_DASH":{"BTC":"8.50274777","DASH":"654.05752077"},"BTC_LTC":{"BTC":"8.50274777","LTC":"1214.67825290"},"BTC_XMR":{"BTC":"8.50274777","XMR":"3696.84685650"}}
     
 */
-pub fn transferBalance() {
+pub fn transfer_balance() {
 
 }
 
@@ -241,7 +215,7 @@ pub fn transferBalance() {
 
     {"success":1,"message":"Transferred 2 BTC from exchange to margin account."}
     */
-pub fn returnMarginAccountSummary() {
+pub fn return_margin_account_summary() {
 
 }
 
@@ -249,14 +223,14 @@ pub fn returnMarginAccountSummary() {
 
     {"totalValue": "0.00346561","pl": "-0.00001220","lendingFees": "0.00000000","netValue": "0.00345341","totalBorrowedValue": "0.00123220","currentMargin": "2.80263755"}
     */
-pub fn marginBuy(apikey: String, secretkey: &str, currencypair: String, rate: String, amount: String, nonce: String) -> String {
+pub fn margin_buy(apikey: String, secretkey: &str, currencypair: String, rate: String, amount: String, nonce: String) -> String {
   let bcurrencypair = "&currencyPair=".to_string() + &currencypair;
   let brate = "&rate=".to_string() + &rate;
   let bamount = "&amount=".to_string() + &amount;
   let bnonce = "&nonce=".to_string() + &nonce;
 
   let parameters = "command=marginBuy".to_string() + &bcurrencypair + &brate + &bamount + &bnonce;
-  let response = apiConnect(apikey, secretkey, parameters);
+  let response = api_connect(apikey, secretkey, parameters);
   response
 }
 
@@ -264,20 +238,20 @@ pub fn marginBuy(apikey: String, secretkey: &str, currencypair: String, rate: St
 
     {"success":1,"message":"Margin order placed.","orderNumber":"154407998","resultingTrades":{"BTC_DASH":[{"amount":"1.00000000","date":"2015-05-10 22:47:05","rate":"0.01383692","total":"0.01383692","tradeID":"1213556","type":"buy"}]}}
    */
-pub fn marginSell(apikey: String, secretkey: &str, currencypair: String, rate: String, amount: String, nonce: String) -> String {
+pub fn margin_sell(apikey: String, secretkey: &str, currencypair: String, rate: String, amount: String, nonce: String) -> String {
   let bcurrencypair = "&currencyPair=".to_string() + &currencypair;
   let brate = "&rate=".to_string() + &rate;
   let bamount = "&amount=".to_string() + &amount;
   let bnonce = "&nonce=".to_string() + &nonce;
 
   let parameters = "command=marginSell".to_string() + &bcurrencypair + &brate + &bamount + &bnonce;
-  let response = apiConnect(apikey, secretkey, parameters);
+  let response = api_connect(apikey, secretkey, parameters);
   response
 }
 
     /* Places a margin sell order in a given market. Parameters and output are the same as for the marginBuy method.
    */
-pub fn getMarginPosition() {
+pub fn get_margin_position() {
 
 }
 
@@ -285,7 +259,7 @@ pub fn getMarginPosition() {
 
     {"amount":"40.94717831","total":"-0.09671314",""basePrice":"0.00236190","liquidationPrice":-1,"pl":"-0.00058655", "lendingFees":"-0.00000038","type":"long"}
    */
-pub fn closeMarginPosition() {
+pub fn close_margin_position() {
 
 }
 
@@ -293,7 +267,7 @@ pub fn closeMarginPosition() {
 
     {"success":1,"message":"Successfully closed margin position.","resultingTrades":{"BTC_XMR":[{"amount":"7.09215901","date":"2015-05-10 22:38:49","rate":"0.00235337","total":"0.01669047","tradeID":"1213346","type":"sell"},{"amount":"24.00289920","date":"2015-05-10 22:38:49","rate":"0.00235321","total":"0.05648386","tradeID":"1213347","type":"sell"}]}}
    */
-pub fn createLoanOffer() {
+pub fn create_loan_offer() {
 
 }
 
@@ -301,7 +275,7 @@ pub fn createLoanOffer() {
 
     {"success":1,"message":"Loan order placed.","orderID":10590}
    */
-pub fn cancelLoanOffer() {
+pub fn cancel_loan_offer() {
 
 }
 
@@ -309,7 +283,7 @@ pub fn cancelLoanOffer() {
 
     {"success":1,"message":"Loan offer canceled."}
    */
-pub fn returnOpenLoanOffers() {
+pub fn return_open_loan_offers() {
 
 }
 
@@ -317,7 +291,7 @@ pub fn returnOpenLoanOffers() {
 
     {"BTC":[{"id":10595,"rate":"0.00020000","amount":"3.00000000","duration":2,"autoRenew":1,"date":"2015-05-10 23:33:50"}],"LTC":[{"id":10598,"rate":"0.00002100","amount":"10.00000000","duration":2,"autoRenew":1,"date":"2015-05-10 23:34:35"}]}
     */
-pub fn returnActiveLoans() {
+pub fn return_active_loans() {
 
 }
 
@@ -326,7 +300,7 @@ pub fn returnActiveLoans() {
     {"provided":[{"id":75073,"currency":"LTC","rate":"0.00020000","amount":"0.72234880","range":2,"autoRenew":0,"date":"2015-05-10 23:45:05","fees":"0.00006000"},{"id":74961,"currency":"LTC","rate":"0.00002000","amount":"4.43860711","range":2,"autoRenew":0,"date":"2015-05-10 23:45:05","fees":"0.00006000"}],"used":[{"id":75238,"currency":"BTC","rate":"0.00020000","amount":"0.04843834","range":2,"date":"2015-05-10 23:51:12","fees":"-0.00000001"}]}
     */
 
-pub fn toggleAutoRenew() {
+pub fn toggle_auto_renew() {
 
 }
 
